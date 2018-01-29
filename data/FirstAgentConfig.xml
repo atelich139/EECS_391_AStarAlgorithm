@@ -2,7 +2,7 @@
 	<Map>data/ResourceCollectionv2.xml</Map>
 	<Player Id="0">
 		<AgentClass>
-			<ClassName>eecs_391_sepia_example.FirstAgent</ClassName>
+			<ClassName>FirstClass</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="0">
