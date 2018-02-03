@@ -2,7 +2,7 @@
 	<Map>data/Combat.xml</Map>
 	<Player Id="1">
 		<AgentClass>
-			<ClassName>eecs_391_sepia_example.MyCombatAgent</ClassName>
+			<ClassName>MyCombatAgent</ClassName>
 			<Argument>0</Argument>
 		</AgentClass>
 	</Player>
