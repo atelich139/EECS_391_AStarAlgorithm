@@ -5,6 +5,16 @@ Resource Collection Agent Changes:
 
 
 Combat Agent Changes:
+Currently, we have made a MyCombatAgent class with a combat agent that attacks nearby enemies and otherwise attacks the
+enemy that has ID = 0. This combat agent comes with a method called isInRange that takes in the StateView, primary id,
+and second id for the units. It returns a boolean based on whether or not the primary unit is in range to attack the
+secondary unit. In the middleStep of the combat agent, the player checks for each unit whether or not there is an enemy
+agent in range and if so, it will attack that enemy. Also, the combat agent has a public static field that holds the id
+of the unit attacked last so that multiple player units can simultaneously target the same enemy if in range.
+If no enemy is in range, then the agent just compound attacks the enemy with ID = 0.
 
+Currently, one bug in the combat agent is that it compound attacks enemy with ID = 0 and also sometimes the agent does
+not seem to recognize an enemy in range, which is either because it is targeting the enemy with ID = 0 or it is targetin
+the last-attacked enemy for some reason.
 
 

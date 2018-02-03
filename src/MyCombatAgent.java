@@ -14,7 +14,7 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate.UnitTemplateView;
 public class MyCombatAgent extends Agent{
 
     private int enemyPlayerNum = 1;
-    private int lastTarget = 0;
+    public static int lastTarget = 0;
 
     public MyCombatAgent(int playernum, String[] otherargs) {
         super(playernum);
