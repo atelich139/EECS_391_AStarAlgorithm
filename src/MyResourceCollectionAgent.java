@@ -18,9 +18,9 @@ import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
-public class FirstClass extends Agent {
+public class MyResourceCollectionAgent extends Agent {
 
-    public FirstClass(int playernum) {
+    public MyResourceCollectionAgent(int playernum) {
         super(playernum);
         // TODO Auto-generated constructor stub
     }

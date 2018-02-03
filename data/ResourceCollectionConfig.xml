@@ -2,7 +2,7 @@
 	<Map>data/ResourceCollectionv2.xml</Map>
 	<Player Id="0">
 		<AgentClass>
-			<ClassName>FirstClass</ClassName>
+			<ClassName>MyResourceCollectionAgent</ClassName>
 			<Argument>2000</Argument>
 			<Argument>2000</Argument>
 		</AgentClass>
