@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
@@ -18,7 +17,7 @@ import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
-public class MyResourceCollectionAgent extends Agent {
+public class MyResourceCollectionAgent extends Agent{
 
     public MyResourceCollectionAgent(int playernum) {
         super(playernum);
@@ -40,7 +39,7 @@ public class MyResourceCollectionAgent extends Agent {
     public Map<Integer, Action> middleStep(StateView newstate, HistoryView statehistory) {
         Map<Integer, Action> actions = new HashMap<Integer, Action>();
         // get all the units
-        //
+        
         List<Integer> myUnitIds = newstate.getUnitIds(playernum);
         List<Integer> peasantIds = new ArrayList<Integer>();
         List<Integer> townhallIds = new ArrayList<Integer>();
@@ -89,7 +88,7 @@ public class MyResourceCollectionAgent extends Agent {
          * assign actions to the peasants. If the peasant is busy, assign
          * nothing. Otherwise, tell him to build a farm if food is maxed out and
          * he has enough money; If he does not have enough money, then check if
-         * he is carrying resources. If he is, tell him to go desposit them.
+         * he is carrying resources. If he is, tell him to go deposit them.
          * Otherwise, tell him to go gather more resources.
          *
          * Bug - all the peasants wait when one of them is trying to build something. All the rest should continue mining.
