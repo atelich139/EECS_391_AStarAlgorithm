@@ -294,6 +294,51 @@ public class AstarAgent extends Agent {
      */
     private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int
             xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations) {
+    
+        /**
+         * Helper class for generating the map
+         *
+         * @author Alexander Telich
+         */
+        class Map {
+            /**
+             * Private helper method for generating a map.
+             *
+             * @param xExtent An int that is the width of the map
+             * @param yExtent An int that is the height of the map
+             * @param resourceLocations A Set of MapLocations of resource locations
+             * @return A HashMap that is the generatedMap. Where the keys are Integers
+             * of all of the y-values(rows) and are mapped to ArrayLists of Integers for
+             * x-values. If an x value is impassable, the value is 0, if it is passable
+             * the value is 1.
+             */
+            private HashMap<Integer, ArrayList<Integer>> createMap(int xExtent, int
+                    yExtent, Set<MapLocation> resourceLocations) {
+                
+                HashMap<Integer, ArrayList<Integer>> generatedMap = new HashMap<>();
+                
+                for (int i = 0; i < yExtent; i++) {
+                    ArrayList<Integer> xValues = new ArrayList<>();
+                    
+                    for (int j = 0; j < xExtent; j++) {
+                        if (resourceLocations.contains(new MapLocation(j, i, null, 0))) {
+                            xValues.add(j, 0);
+                        }else {
+                            xValues.add(j, 1);
+                        }
+                    }
+                    // When the loop over the row of x's is done add it to the HashMap.
+                    generatedMap.put(i, xValues);
+                }
+                return generatedMap;
+            }
+        }
+    
+        // Generates the Map when AstarSearch is called.
+        HashMap<Integer, ArrayList<Integer>> generatedMap = new Map().createMap
+                (xExtent, yExtent, resourceLocations);
+        
+        
         
         
         
