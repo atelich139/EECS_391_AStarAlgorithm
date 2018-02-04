@@ -11,6 +11,8 @@ public class AstarNode {
     private final int x, y;
     // HashMap for the map
     private final HashMap<Integer, ArrayList<Integer>> generatedMap;
+    // The AstarNode which this one came from
+    private final AstarNode cameFrom;
     
     /**
      * Constructor declaration for AstarNode
@@ -21,10 +23,12 @@ public class AstarNode {
      *            each y-value corresponds to an ArrayList of Integers for x-values in
      *            that row.
      */
-    public AstarNode(int x, int y, HashMap<Integer, ArrayList<Integer>> generatedMap) {
+    public AstarNode(int x, int y, HashMap<Integer, ArrayList<Integer>> generatedMap,
+                     AstarNode cameFrom) {
         this.x = x;
         this.y = y;
         this.generatedMap = generatedMap;
+        this.cameFrom = cameFrom;
     }
     
     /**
