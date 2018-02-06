@@ -343,6 +343,8 @@ public class AstarAgent extends Agent {
         
         
         
+        
+        
         // return an empty path
         return new Stack<MapLocation>();
     }
