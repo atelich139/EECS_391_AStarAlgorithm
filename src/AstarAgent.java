@@ -1,3 +1,4 @@
+import com.sun.xml.internal.bind.v2.TODO;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
@@ -312,6 +313,7 @@ public class AstarAgent extends Agent {
              * x-values. If an x value is impassable, the value is 0, if it is passable
              * the value is 1.
              */
+
             private HashMap<Integer, ArrayList<Integer>> createMap(int xExtent, int
                     yExtent, Set<MapLocation> resourceLocations) {
                 
