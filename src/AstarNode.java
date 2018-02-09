@@ -44,7 +44,7 @@ public class AstarNode {
         this.gameMap = gameMap;
         this.cameFrom = cameFrom;
     }
-    
+
     /**
      * Method getHeuristic calculates the heuristic
      *

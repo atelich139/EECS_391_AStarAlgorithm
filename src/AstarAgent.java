@@ -106,7 +106,7 @@ public class AstarAgent extends Agent {
         path = findPath(newstate);
         totalPlanTime += System.nanoTime() - startTime;
 
-        // steps necessary to instantiate the gameMap once
+        // steps necessary to instantiate the gamemap once
         Unit.UnitView townhallUnit = newstate.getUnit(townhallID);
         Unit.UnitView footmanUnit = newstate.getUnit(footmanID);
         MapLocation startLoc = new MapLocation(footmanUnit.getXPosition(), footmanUnit.getYPosition(), null, 0);
