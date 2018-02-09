@@ -14,10 +14,10 @@ public class AstarAgent extends Agent {
 
     GameMap gamemap;
 
-    class MapLocation {
-        public int x, y;
+    public static class MapLocation {
+        public Integer x, y;
 
-        public MapLocation(int x, int y, MapLocation cameFrom, float cost) {
+        public MapLocation(Integer x, Integer y, MapLocation cameFrom, float cost) {
             this.x = x;
             this.y = y;
         }
@@ -347,9 +347,9 @@ public class AstarAgent extends Agent {
      * gamemap.printMap();
      * @author Patrick Do
      */
-    class GameMap {
+    public static class GameMap {
 
-        int[][] generatedMap;
+        Integer[][] generatedMap;
         int[] enemyLocation;
 
         /**
@@ -363,7 +363,7 @@ public class AstarAgent extends Agent {
          * @param townHallLoc           location of the goal - the enemy townhall.
          */
         public GameMap(int xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations, MapLocation townHallLoc) {
-            generatedMap = new int[xExtent][yExtent];
+            generatedMap = new Integer[xExtent][yExtent];
             enemyLocation = new int[2];
             addResourceLocations(resourceLocations, generatedMap);
             addTownHallLocation(townHallLoc);
@@ -381,7 +381,7 @@ public class AstarAgent extends Agent {
          * @param townHallLoc           location of the goal - the enemy townhall.
          */
         public GameMap(int xExtent, int yExtent, Set<MapLocation> resourceLocations, MapLocation townHallLoc) {
-            generatedMap = new int[xExtent][yExtent];
+            generatedMap = new Integer[xExtent][yExtent];
             enemyLocation = new int[2];
             addResourceLocations(resourceLocations, generatedMap);
             addTownHallLocation(townHallLoc);
@@ -429,6 +429,24 @@ public class AstarAgent extends Agent {
 
         /**
          *
+         * Method will get the generated map
+         * @return the map of the game
+         */
+        public Integer[][] getGeneratedMap() {
+            return generatedMap;
+        }
+
+        /**
+         *
+         * Method will set the map to an input map
+         * @param map input map
+         */
+        public void setGeneratedMap(Integer[][] map) {
+            generatedMap = map;
+        }
+
+        /**
+         *
          * Tells you the width of the GameMap.
          *
          * @return
@@ -453,7 +471,7 @@ public class AstarAgent extends Agent {
          *
          * @param enemyFootmanLoc
          */
-        private void updateEnemyLocation(MapLocation enemyFootmanLoc) {
+        public void updateEnemyLocation(MapLocation enemyFootmanLoc) {
             generatedMap[enemyLocation[0]][enemyLocation[1]] = 0;
             enemyLocation[0] = enemyFootmanLoc.x;
             enemyLocation[1] = enemyFootmanLoc.y;
@@ -468,11 +486,16 @@ public class AstarAgent extends Agent {
          * @param resourceLocations
          * @param generatedMap
          */
-        private void addResourceLocations(Set<MapLocation> resourceLocations, int[][] generatedMap) {
-            Iterator<MapLocation> iter = resourceLocations.iterator();
-            while (iter.hasNext()) {
-                MapLocation tree = iter.next();
-                generatedMap[tree.x][tree.y] = 1;
+        private void addResourceLocations(Set<MapLocation> resourceLocations, Integer[][] generatedMap) {
+            try {
+                Iterator<MapLocation> iter = resourceLocations.iterator();
+                while (iter.hasNext()) {
+                    MapLocation tree = iter.next();
+                    generatedMap[tree.x][tree.y] = 1;
+                }
+            }
+            catch(Exception e) {
+
             }
         }
 
