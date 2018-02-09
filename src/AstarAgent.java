@@ -12,9 +12,15 @@ import java.util.*;
 
 public class AstarAgent extends Agent {
 
-    GameMap gamemap;
+    // Cache for the GameMap
+    GameMap gameMap;
+    
+    // The 'table' where we store the old nodes with their second best heuristics
+    HashMap<AstarNode, AstarNode> oldNode2ndBest;
+    
+    HashMap<AstarNode, LinkedList<AstarNode>> cachedNeighbors;
 
-    class MapLocation {
+    static class MapLocation {
         public int x, y;
 
         public MapLocation(int x, int y, MapLocation cameFrom, float cost) {
@@ -100,7 +106,7 @@ public class AstarAgent extends Agent {
         path = findPath(newstate);
         totalPlanTime += System.nanoTime() - startTime;
 
-        // steps necessary to instantiate the gamemap once
+        // steps necessary to instantiate the gameMap once
         Unit.UnitView townhallUnit = newstate.getUnit(townhallID);
         Unit.UnitView footmanUnit = newstate.getUnit(footmanID);
         MapLocation startLoc = new MapLocation(footmanUnit.getXPosition(), footmanUnit.getYPosition(), null, 0);
@@ -117,11 +123,10 @@ public class AstarAgent extends Agent {
             resourceLocations.add(new MapLocation(resource.getXPosition(), resource.getYPosition(), null, 0));
         }
         if(footmanLoc == null){
-            gamemap = new GameMap(newstate.getXExtent(), newstate.getYExtent(), resourceLocations, goalLoc);
+            gameMap = new GameMap(newstate.getXExtent(), newstate.getYExtent(), resourceLocations, goalLoc);
         } else {
-            gamemap = new GameMap(newstate.getXExtent(), newstate.getYExtent(), footmanLoc, resourceLocations, goalLoc);
+            gameMap = new GameMap(newstate.getXExtent(), newstate.getYExtent(), footmanLoc, resourceLocations, goalLoc);
         }
-        gamemap.printMap();
 
         return middleStep(newstate, statehistory);
     }
@@ -300,207 +305,50 @@ public class AstarAgent extends Agent {
      */
     private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int
             xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations) {
-
-
-
-
-
-
+        Stack<MapLocation> path = new Stack<>();
+        AstarNode currentNode = new AstarNode(start.x, start.y, gameMap, null);
+        LinkedList<AstarNode> neighbors;
+        
+        
+        // If gameMap not created, creates one. Else, updates enemy location.
+        if (gameMap == null) {
+            gameMap = new GameMap(xExtent, yExtent, enemyFootmanLoc, resourceLocations,
+                                  goal);
+        }else { gameMap.updateEnemyLocation(enemyFootmanLoc); }
+        
+        // Checks to see if
+        if (cachedNeighbors.containsKey(currentNode)) {
+            neighbors = cachedNeighbors.get(currentNode);
+        }else {
+            neighbors = currentNode.getNeighbors();
+            cachedNeighbors.putIfAbsent(currentNode, neighbors);
+        }
+        
+        
+        System.out.println(neighbors.size());
+        
+        for (AstarNode neighbor : neighbors) {
+            if (neighbor.getMapLocation() == goal) {
+                path.push(neighbor.getMapLocation());
+                return path;
+            }else {
+                // Lookup to see if the neighbor is in our cache of 2nd best heuristics
+                if (oldNode2ndBest.containsKey(currentNode)) {
+                    AstarNode old2ndBestSuccessor = oldNode2ndBest.get(currentNode);
+                    
+                    old2ndBestSuccessor.getCachedHeuristic();
+                    
+                }
+                
+            }
+            
+        }
+        
+        
         // return an empty path
         return new Stack<MapLocation>();
-    }
-
-    /**
-     * Use the GameMap class to conceptualize the map.
-     * Examples:
-     *
-     * To create a gamemap -
-     * GameMap gamemap = new GameMap(xExtent, yExtent, enemyFootmanLoc, resourceLocations)
-     *
-     * To check if a tile is blocked by a tree or an enemy footman -
-     * if(gamemap.isBlocked(5, 5)){
-     *     System.out.println("can't go that way");
-     * }
-     *
-     * To check what item is located at a position in the game board -
-     * int num = gamemap.getPosition(2, 3);
-     * if(num == 0){
-     *     System.out.println("the board is clear at (2, 3)");
-     * } else if(num == 1){
-     *     System.out.println("there is a tree at (2, 3)");
-     * } else if(num == 2){
-     *     System.out.println("there is an enemy footman at (2, 3)");
-     * } else if(num == 3){
-     *     System.out.println("there is a townhall at (2, 3)");
-     * }
-     *
-     * To get the location of the enemy footman -
-     * int[][] enemyLocation = gamemap.getEnemyPosition();
-     * int enemyX = enemyLocation[0];
-     * int enemyY = enemyLocation[1];
-     *
-     * To get the size of the gameboard -
-     * int lengthX = gamemap.getLengthX();
-     * int lengthY = gamemap.getLengthY();
-     *
-     * To print out the appearance of the board -
-     * gamemap.printMap();
-     * @author Patrick Do
-     */
-    class GameMap {
-
-        int[][] generatedMap;
-        int[] enemyLocation;
-
-        /**
-         *
-         * This is the constructor for the GameMap class, if there is an enemy footman on the board.
-         *
-         * @param xExtent               x length of the board.
-         * @param yExtent               y length of the board.
-         * @param enemyFootmanLoc       location of the enemy footman.
-         * @param resourceLocations     set of locations of the trees.
-         * @param townHallLoc           location of the goal - the enemy townhall.
-         */
-        public GameMap(int xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations, MapLocation townHallLoc) {
-            generatedMap = new int[xExtent][yExtent];
-            enemyLocation = new int[2];
-            addResourceLocations(resourceLocations, generatedMap);
-            addTownHallLocation(townHallLoc);
-            enemyLocation[0] = enemyFootmanLoc.x;
-            enemyLocation[1] = enemyFootmanLoc.y;
-            updateEnemyLocation(enemyFootmanLoc);
-        }
-
-        /**
-         *
-         * This is the constructor for the GameMap class, if there is no enemy footman on the board.
-         * @param xExtent               x length of the board.
-         * @param yExtent               y length of the board.
-         * @param resourceLocations     set of locations of the trees.
-         * @param townHallLoc           location of the goal - the enemy townhall.
-         */
-        public GameMap(int xExtent, int yExtent, Set<MapLocation> resourceLocations, MapLocation townHallLoc) {
-            generatedMap = new int[xExtent][yExtent];
-            enemyLocation = new int[2];
-            addResourceLocations(resourceLocations, generatedMap);
-            addTownHallLocation(townHallLoc);
-            enemyLocation[0] = -1;
-            enemyLocation[1] = -1;
-        }
-
-        /**
-         *
-         * Get the type of unit at the given position on the board. A 0 is a free space, a 1 is tree, a 2 is an enemy,
-         * a 3 is a townhall.
-         *
-         * @param x
-         * @param y
-         * @return
-         */
-        public int getPosition(int x, int y) {
-            return generatedMap[x][y];
-        }
-
-        /**
-         *
-         * Tells you if the given space is blocked - meaning its occupied by tree, an enemy, or a townhall.
-         *
-         * @param x
-         * @param y
-         * @return
-         */
-        public boolean isBlocked(int x, int y) {
-            if (generatedMap[x][y] != 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         *
-         * Tells you the position of the enemy. If there is no enemy on the board, returns -1, -1.
-         * @return
-         */
-        public int[] getEnemyPosition() {
-            return enemyLocation;
-        }
-
-        /**
-         *
-         * Tells you the width of the GameMap.
-         *
-         * @return
-         */
-        public int getLengthX(){
-            return generatedMap.length;
-        }
-
-        /**
-         *
-         * tells you the height of the GameMap.
-         *
-         * @return
-         */
-        public int getLengthY(){
-            return generatedMap[0].length;
-        }
-
-        /**
-         *
-         * Moves the footman from its last known position on the gamemap to its current new position.
-         *
-         * @param enemyFootmanLoc
-         */
-        private void updateEnemyLocation(MapLocation enemyFootmanLoc) {
-            generatedMap[enemyLocation[0]][enemyLocation[1]] = 0;
-            enemyLocation[0] = enemyFootmanLoc.x;
-            enemyLocation[1] = enemyFootmanLoc.y;
-            generatedMap[enemyLocation[0]][enemyLocation[1]] = 2;
-        }
-
-        /**
-         *
-         * Adds new resource locations to the map. Shouldn't be called outside of the constructor, since here
-         * no new resources will be added to the board.
-         *
-         * @param resourceLocations
-         * @param generatedMap
-         */
-        private void addResourceLocations(Set<MapLocation> resourceLocations, int[][] generatedMap) {
-            Iterator<MapLocation> iter = resourceLocations.iterator();
-            while (iter.hasNext()) {
-                MapLocation tree = iter.next();
-                generatedMap[tree.x][tree.y] = 1;
-            }
-        }
-
-        /**
-         *
-         * Adds a new town hall location to the map. Shouldn't be called outside of constructor, since no new town
-         * halls will be added to the board.
-         *
-         * @param townHallLoc
-         */
-        private void addTownHallLocation(MapLocation townHallLoc){
-            generatedMap[townHallLoc.x][townHallLoc.y] = 3;
-        }
-
-        /**
-         *
-         * Prints out the map as numbers in the console. Easy way to verify the gamemap representation isn't completely
-         * off.
-         */
-        private void printMap(){
-            for(int k = 0; k < generatedMap[0].length; k++){
-                for(int j = 0; j < generatedMap.length; j++){
-                    System.out.print(generatedMap[j][k] + " ");
-                }
-                System.out.println();
-            }
-        }
-
+        
+        
     }
 
     /**
