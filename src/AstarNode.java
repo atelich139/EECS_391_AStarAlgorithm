@@ -57,8 +57,6 @@ public class AstarNode {
         // Using Chebyshev distance formula provided in the assignment instructions
         double heuristic = Math.max(Math.abs(goal.x - x), Math.abs(goal.y - y));
         
-        
-        
         return heuristic;
     }
 
