@@ -64,7 +64,7 @@ public class EnemyBlockerAgent extends Agent {
             damageLog = (DamageLog)var10.next();
         } while(damageLog.getDefenderID() != unitID);
         
-        int enemyFootmanID = (Integer)stateView.getUnitIds(0).get(0);
+        int enemyFootmanID = stateView.getUnitIds(0).get(0);
         actions.put(unitID, Action.createCompoundAttack(unitID, enemyFootmanID));
         return actions;
     }

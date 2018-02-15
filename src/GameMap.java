@@ -10,19 +10,19 @@ import java.util.Set;
  *
  * To check if a tile is blocked by a tree or an enemy footman -
  * if(gameMap.isBlocked(5, 5)){
- *     System.out.println("can't go that way");
+ * System.out.println("can't go that way");
  * }
  *
  * To check what item is located at a position in the game board -
  * int num = gameMap.getPosition(2, 3);
  * if(num == 0){
- *     System.out.println("the board is clear at (2, 3)");
+ * System.out.println("the board is clear at (2, 3)");
  * } else if(num == 1){
- *     System.out.println("there is a tree at (2, 3)");
+ * System.out.println("there is a tree at (2, 3)");
  * } else if(num == 2){
- *     System.out.println("there is an enemy footman at (2, 3)");
+ * System.out.println("there is an enemy footman at (2, 3)");
  * } else if(num == 3){
- *     System.out.println("there is a townhall at (2, 3)");
+ * System.out.println("there is a townhall at (2, 3)");
  * }
  *
  * To get the location of the enemy footman -
@@ -30,7 +30,7 @@ import java.util.Set;
  * int enemyX = enemyLocation[0];
  * int enemyY = enemyLocation[1];
  *
- * To get the size of the gameboard -
+ * To get the size of the gameMap -
  * int lengthX = gameMap.getLengthX();
  * int lengthY = gameMap.getLengthY();
  *
@@ -42,7 +42,7 @@ import java.util.Set;
 public class GameMap {
     
     private int[][] generatedMap;
-    private int[] enemyLocation;
+    private int[] enemyLocation = new int[2];
     
     /**
      * This is the constructor for the GameMap class, if there is an enemy footman on
@@ -58,7 +58,6 @@ public class GameMap {
                    Set<AstarAgent.MapLocation> resourceLocations,
                    AstarAgent.MapLocation townHallLoc) {
         generatedMap = new int[xExtent][yExtent];
-        enemyLocation = new int[2];
         addResourceLocations(resourceLocations, generatedMap);
         addTownHallLocation(townHallLoc);
         enemyLocation[0] = enemyFootmanLoc.x;
@@ -79,7 +78,6 @@ public class GameMap {
                    Set<AstarAgent.MapLocation> resourceLocations,
                    AstarAgent.MapLocation townHallLoc) {
         generatedMap = new int[xExtent][yExtent];
-        enemyLocation = new int[2];
         addResourceLocations(resourceLocations, generatedMap);
         addTownHallLocation(townHallLoc);
         enemyLocation[0] = -1;
@@ -109,15 +107,12 @@ public class GameMap {
      * @return
      */
     public boolean isBlocked(int x, int y) {
-        if (generatedMap[x][y] != 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return generatedMap[x][y] != 0;
     }
     
     /**
-     * Tells you the position of the enemy. If there is no enemy on the board, returns -1, -1.
+     * Tells you the position of the enemy. If there is no enemy on the board, returns
+     * -1, -1.
      *
      * @return
      */
@@ -163,7 +158,8 @@ public class GameMap {
     }
     
     /**
-     * Adds new resource locations to the map. Shouldn't be called outside of the constructor, since here
+     * Adds new resource locations to the map. Shouldn't be called outside of the
+     * constructor, since here
      * no new resources will be added to the board.
      *
      * @param resourceLocations
@@ -179,7 +175,8 @@ public class GameMap {
     }
     
     /**
-     * Adds a new town hall location to the map. Shouldn't be called outside of constructor, since no new town
+     * Adds a new town hall location to the map. Shouldn't be called outside of
+     * constructor, since no new town
      * halls will be added to the board.
      *
      * @param townHallLoc
@@ -189,7 +186,8 @@ public class GameMap {
     }
     
     /**
-     * Prints out the map as numbers in the console. Easy way to verify the gameMap representation isn't completely
+     * Prints out the map as numbers in the console. Easy way to verify the gameMap
+     * representation isn't completely
      * off.
      */
     private void printMap() {
