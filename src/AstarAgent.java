@@ -22,7 +22,7 @@ public class AstarAgent extends Agent {
     
     MapLocation startLoc1;
     
-    protected int pathReplanCount = -1;
+    boolean pathReplanCount;
     
     Stack<MapLocation> path;
     int footmanID, townhallID, enemyFootmanID;
@@ -148,7 +148,7 @@ public class AstarAgent extends Agent {
         
         if (shouldReplanPath(newstate, statehistory, path)) {
             long planStartTime = System.nanoTime();
-            pathReplanCount = pathReplanCount + 1;
+            pathReplanCount = true;
             path = findPath(newstate);
             planTime = System.nanoTime() - planStartTime;
             totalPlanTime += planTime;
@@ -269,18 +269,13 @@ public class AstarAgent extends Agent {
         
         MapLocation startLoc = new MapLocation(footmanUnit.getXPosition(),
                                                footmanUnit.getYPosition(), null, 0);
-        if (pathReplanCount == -1) {
+        if (!pathReplanCount) {
             startLoc1 = startLoc;
         }
         MapLocation goalLoc = new MapLocation(townhallUnit.getXPosition(),
                                               townhallUnit.getYPosition(), null, 0);
         
-        if (pathReplanCount > 0) {
-            
-            
-            cachedNeighbors.clear();
-        }
-        
+                
         return AstarSearch(startLoc, goalLoc);
     }
     
@@ -347,11 +342,11 @@ public class AstarAgent extends Agent {
                         return Double.compare(fValue.get(o1), fValue.get(o2));
                     }
                 });
+        Integer goalQuadrant = new Quadrant().getQuadrant(goal.x, goal.y);
         
         gValue.put(startNode, 0.0);
         fValue.put(startNode, startNode.getHeuristic(goal));
         openList.offer(startNode);
-        
         
         
         while (!openList.isEmpty()) {
@@ -359,9 +354,7 @@ public class AstarAgent extends Agent {
             
             if (current.getMapLocation().equals(goal1) || current.getMapLocation()
                                                                 .equals(goal2)) {
-                if (pathReplanCount > 0) {
-                    path.clear();
-                }
+                
                 while (current != null) {
                     path.push(current.getMapLocation());
                     current = cameFrom.get(current);
@@ -387,15 +380,12 @@ public class AstarAgent extends Agent {
                 if (neighbor == null) {
                     continue;
                 }
+    
+                Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
+                                                                     neighbor.getY());
                 
-                if (pathReplanCount == 0) {
-                    Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
-                                                                          neighbor.getY());
-                    Integer goalQuadrant = new Quadrant().getQuadrant(goal.x, goal.y);
-                    
-                    if (neighborQuadrant != goalQuadrant) {
-                        continue;
-                    }
+                if (!pathReplanCount && neighborQuadrant != goalQuadrant) {
+                    continue;
                 }
     
                 Double tentativeG = gValue.get(current) + current.getTraverseCost();
