@@ -65,7 +65,7 @@ public class AstarNode {
      *       |  2
      *  3    |
      *
-     * We will add the neighbors to the linked list in order of quadrants
+     * We will add the neighbors to the array in order of quadrants
      * first two go to Q1, next 2 go to Q2, next two go to Q3, and last two go to Q4
      *
      *

@@ -18,7 +18,11 @@ public class AstarAgent extends Agent {
     // The 'table' where we store the old nodes with their second best heuristics
     HashMap<AstarNode, AstarNode> oldNode2ndBest = new HashMap<>();
     
-    HashMap<AstarNode, LinkedList<AstarNode>> cachedNeighbors = new HashMap<>();
+    HashMap<AstarNode, AstarNode[]> cachedNeighbors = new HashMap<>();
+    
+    MapLocation startLoc1;
+    
+    protected int pathReplanCount = -1;
     
     Stack<MapLocation> path;
     int footmanID, townhallID, enemyFootmanID;
@@ -106,6 +110,7 @@ public class AstarAgent extends Agent {
             footmanLoc = new MapLocation(enemyFootmanUnit.getXPosition(),
                                          enemyFootmanUnit.getYPosition(), null, 0);
         }
+        
         List<Integer> resourceIDs = newstate.getAllResourceIds();
         Set<MapLocation> resourceLocations = new HashSet<MapLocation>();
         for (Integer resourceID : resourceIDs) {
@@ -143,6 +148,7 @@ public class AstarAgent extends Agent {
         
         if (shouldReplanPath(newstate, statehistory, path)) {
             long planStartTime = System.nanoTime();
+            pathReplanCount = pathReplanCount + 1;
             path = findPath(newstate);
             planTime = System.nanoTime() - planStartTime;
             totalPlanTime += planTime;
@@ -233,7 +239,20 @@ public class AstarAgent extends Agent {
      */
     private boolean shouldReplanPath(State.StateView state, History.HistoryView history,
                                      Stack<MapLocation> currentPath) {
-        return false;
+        
+        if (enemyFootmanID != -1) {
+            Unit.UnitView enemyFootmanUnit = state.getUnit(enemyFootmanID);
+            MapLocation enemyLoc = new MapLocation(enemyFootmanUnit.getXPosition(),
+                                                   enemyFootmanUnit.getYPosition(), null, 0);
+            
+            if (currentPath.contains(enemyLoc)) {
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return false;
+        }
     }
     
     /**
@@ -247,13 +266,20 @@ public class AstarAgent extends Agent {
     private Stack<MapLocation> findPath(State.StateView state) {
         Unit.UnitView townhallUnit = state.getUnit(townhallID);
         Unit.UnitView footmanUnit = state.getUnit(footmanID);
-        Unit.UnitView enemyUnit = state.getUnit(enemyFootmanID);
         
         MapLocation startLoc = new MapLocation(footmanUnit.getXPosition(),
                                                footmanUnit.getYPosition(), null, 0);
-        
+        if (pathReplanCount == -1) {
+            startLoc1 = startLoc;
+        }
         MapLocation goalLoc = new MapLocation(townhallUnit.getXPosition(),
                                               townhallUnit.getYPosition(), null, 0);
+        
+        if (pathReplanCount > 0) {
+            
+            
+            cachedNeighbors.clear();
+        }
         
         return AstarSearch(startLoc, goalLoc);
     }
@@ -305,11 +331,11 @@ public class AstarAgent extends Agent {
      * @return Stack of positions with top of stack being first move in plan
      */
     private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal) {
-        goal = new MapLocation(goal.x - 1, goal.y, null, (float) 0.0);
-        Integer depth;
+        MapLocation goal1 = new MapLocation(goal.x - 1, goal.y, null, (float) 0.0);
+        MapLocation goal2 = new MapLocation(goal.x - 1, goal.y - 1, null, (float) 0.0);
         Stack<MapLocation> path = new Stack<>();
         AstarNode startNode = new AstarNode(start.x, start.y, gameMap);
-        LinkedList<AstarNode> neighbors;
+        AstarNode[] neighbors;
         HashMap<AstarNode, AstarNode> cameFrom = new HashMap<>();
         HashMap<AstarNode, Double> gValue = new HashMap<>();
         HashMap<AstarNode, Double> fValue = new HashMap<>();
@@ -326,35 +352,16 @@ public class AstarAgent extends Agent {
         fValue.put(startNode, startNode.getHeuristic(goal));
         openList.offer(startNode);
         
-    
-        class Quadrant {
-            private Integer getQuadrant(int x, int y) {
-                Integer nodeX = x;
-                Integer nodeY = y;
-            
-                Integer cX = nodeX - start.x;
-                Integer cY = nodeY - start.y;
-            
-                Integer nodeQuadrant = 0;
-            
-                if (cX >= 0 && cY < 0) nodeQuadrant = 1;
-                else if (cX > 0 && cY >= 0) nodeQuadrant = 2;
-                else if (cX <= 0 && cY > 0) nodeQuadrant = 3;
-                else if (cX > 0 && cY <= 0) nodeQuadrant = 4;
-            
-            
-                return nodeQuadrant;
-            
-            }
-        }
         
-        Integer goalQuadrant = new Quadrant().getQuadrant(goal.x, goal.y);
         
         while (!openList.isEmpty()) {
             AstarNode current = openList.poll();
             
-            
-            if (current.getMapLocation().equals(goal)) {
+            if (current.getMapLocation().equals(goal1) || current.getMapLocation()
+                                                                .equals(goal2)) {
+                if (pathReplanCount > 0) {
+                    path.clear();
+                }
                 while (current != null) {
                     path.push(current.getMapLocation());
                     current = cameFrom.get(current);
@@ -362,20 +369,7 @@ public class AstarAgent extends Agent {
                 return path;
             }
             
-            
             closedList.add(current);
-
-
-//            for (AstarNode neighbor : neighbors) {
-//                if (neighbor.getMapLocation().equals(goal)) {
-//                    while (current != null) {
-//                        path.push(current.getMapLocation());
-//                        current = cameFrom.get(current);
-//                    }
-//                    return path;
-//
-//                }
-//            }
             
             if (!cachedNeighbors.isEmpty() && cachedNeighbors.containsKey(current)) {
                 neighbors = cachedNeighbors.get(current);
@@ -390,8 +384,19 @@ public class AstarAgent extends Agent {
                     continue;
                 }
                 
-                Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
-                                                                      neighbor.getY());
+                if (neighbor == null) {
+                    continue;
+                }
+                
+                if (pathReplanCount == 0) {
+                    Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
+                                                                          neighbor.getY());
+                    Integer goalQuadrant = new Quadrant().getQuadrant(goal.x, goal.y);
+                    
+                    if (neighborQuadrant != goalQuadrant) {
+                        continue;
+                    }
+                }
     
                 Double tentativeG = gValue.get(current) + current.getTraverseCost();
     
@@ -402,7 +407,7 @@ public class AstarAgent extends Agent {
         
                     if (neighbor.getCachedHeuristic() != null) {
                         neighborHeuristic = neighbor.getCachedHeuristic();
-                    } else {
+                    } else{
                         neighborHeuristic = neighbor.getHeuristic(goal);
                         neighbor.setCachedHeuristic(neighborHeuristic);
                     }
@@ -413,17 +418,40 @@ public class AstarAgent extends Agent {
         
                     if (openList.contains(neighbor)) {
                         openList.remove(neighbor);
+                        oldNode2ndBest.put(current, neighbor);
                     }
         
                     openList.offer(neighbor);
                     cameFrom.put(neighbor, current);
                 }
-                
-                
             }
         }
         
         return null;
+    }
+    
+    class Quadrant {
+        private Integer getQuadrant(int x, int y) {
+            Integer nodeX = x;
+            Integer nodeY = y;
+            
+            final int startX = startLoc1.x;
+            final int startY = startLoc1.y;
+            
+            Integer cX = nodeX - startX;
+            Integer cY = nodeY - startY;
+            
+            Integer nodeQuadrant = 0;
+            
+            if (cX >= 0 && cY < 0) nodeQuadrant = 1;
+            else if (cX > 0 && cY >= 0) nodeQuadrant = 2;
+            else if (cX <= 0 && cY > 0) nodeQuadrant = 3;
+            else if (cX > 0 && cY <= 0) nodeQuadrant = 4;
+            
+            
+            return nodeQuadrant;
+            
+        }
     }
     
     /**
