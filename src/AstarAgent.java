@@ -16,13 +16,12 @@ public class AstarAgent extends Agent {
     GameMap gameMap;
     
     // The 'table' where we store the old nodes with their second best heuristics
-    HashMap<AstarNode, AstarNode> oldNode2ndBest = new HashMap<>();
     
     HashMap<AstarNode, AstarNode[]> cachedNeighbors = new HashMap<>();
     
     MapLocation startLoc1;
     
-    boolean pathReplanCount;
+    boolean pathReplanCount = false;
     
     Stack<MapLocation> path;
     int footmanID, townhallID, enemyFootmanID;
@@ -148,7 +147,6 @@ public class AstarAgent extends Agent {
         
         if (shouldReplanPath(newstate, statehistory, path)) {
             long planStartTime = System.nanoTime();
-            pathReplanCount = true;
             path = findPath(newstate);
             planTime = System.nanoTime() - planStartTime;
             totalPlanTime += planTime;
@@ -240,18 +238,21 @@ public class AstarAgent extends Agent {
     private boolean shouldReplanPath(State.StateView state, History.HistoryView history,
                                      Stack<MapLocation> currentPath) {
         
-        if (enemyFootmanID != -1) {
+        if (enemyFootmanID == -1) {
+            return false;
+            
+        }else {
             Unit.UnitView enemyFootmanUnit = state.getUnit(enemyFootmanID);
             MapLocation enemyLoc = new MapLocation(enemyFootmanUnit.getXPosition(),
                                                    enemyFootmanUnit.getYPosition(), null, 0);
-            
+    
             if (currentPath.contains(enemyLoc)) {
+                gameMap.updateEnemyLocation(enemyLoc);
+                pathReplanCount = true;
                 return true;
             }else {
                 return false;
             }
-        }else {
-            return false;
         }
     }
     
@@ -343,17 +344,22 @@ public class AstarAgent extends Agent {
                     }
                 });
         Integer goalQuadrant = new Quadrant().getQuadrant(goal.x, goal.y);
+     
         
         gValue.put(startNode, 0.0);
         fValue.put(startNode, startNode.getHeuristic(goal));
         openList.offer(startNode);
+        
+        Integer quadrantArea = new Quadrant().getQuadrantArea(goal.x, goal.y);
+        boolean quadrantViolated = false;
+        
         
         
         while (!openList.isEmpty()) {
             AstarNode current = openList.poll();
             
             if (current.getMapLocation().equals(goal1) || current.getMapLocation()
-                                                                .equals(goal2)) {
+                                                                 .equals(goal2)) {
                 
                 while (current != null) {
                     path.push(current.getMapLocation());
@@ -363,14 +369,19 @@ public class AstarAgent extends Agent {
             }
             
             closedList.add(current);
+    
+            if (closedList.size() == quadrantArea) {
+                quadrantViolated = true;
+            }
             
             if (!cachedNeighbors.isEmpty() && cachedNeighbors.containsKey(current)) {
                 neighbors = cachedNeighbors.get(current);
+                
             } else {
                 neighbors = current.getNeighbors();
                 cachedNeighbors.putIfAbsent(current, neighbors);
             }
-            
+    
             
             for (AstarNode neighbor : neighbors) {
                 if (closedList.contains(neighbor)) {
@@ -383,8 +394,9 @@ public class AstarAgent extends Agent {
     
                 Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
                                                                      neighbor.getY());
-                
-                if (!pathReplanCount && neighborQuadrant != goalQuadrant) {
+
+                if (!pathReplanCount && neighborQuadrant != goalQuadrant &&
+                    !quadrantViolated) {
                     continue;
                 }
     
@@ -408,7 +420,6 @@ public class AstarAgent extends Agent {
         
                     if (openList.contains(neighbor)) {
                         openList.remove(neighbor);
-                        oldNode2ndBest.put(current, neighbor);
                     }
         
                     openList.offer(neighbor);
@@ -441,6 +452,14 @@ public class AstarAgent extends Agent {
             
             return nodeQuadrant;
             
+        }
+        
+        private Integer getQuadrantArea(int x, int y) {
+            int width = Math.abs(x - startLoc1.x);
+            int height = Math.abs(y - startLoc1.y);
+            
+            int area = width * height;
+            return area;
         }
     }
     

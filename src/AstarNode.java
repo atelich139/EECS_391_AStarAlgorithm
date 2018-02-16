@@ -167,4 +167,22 @@ public class AstarNode {
     }
     
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AstarNode c = (AstarNode) obj;
+        
+        if (c.getX() == this.getX() && c.getY() == this.getY()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
 }
