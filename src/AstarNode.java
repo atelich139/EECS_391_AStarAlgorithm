@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * The AstarNode Class
@@ -53,14 +54,46 @@ public class AstarNode {
     /**
      * Method getNeighbors gets the AstarNode that are neighbors of the current AstarNode
      *
+     *
+     * Quadrants:
+     *
+     *     |    1
+     *  4  |
+     *     |-----
+     *     |*|
+     *  -----|
+     *       |  2
+     *  3    |
+     *
+     * We will add the neighbors to the linked list in order of quadrants
+     * first two go to Q1, next 2 go to Q2, next two go to Q3, and last two go to Q4
+     *
+     *
      * @return a set of AstarNode neighbors
      *
      * @author Alexander Telich
      * @author Daniel Luo
      */
-    public LinkedList<AstarNode> getNeighbors() {
-        LinkedList<AstarNode> neighbors = new LinkedList<>();
-        
+    public AstarNode[] getNeighbors() {
+        AstarNode[] neighbors = new AstarNode[8];
+
+        // stores coordinates of all possible neighbors
+        int[][] neighborCoords = {{x,y-1},{x+1,y-1},{x+1,y},{x+1,y+1},{x,y+1},{x-1,y+1},{x-1,y},{x-1,y-1}};
+
+        // loops through coordinates of possible neighbors
+        for(int i = 0; i < neighborCoords.length; i++) {
+            // if neighbor coordinates are out of bounds, then do nothing
+            if (neighborCoords[i][0] < 0 || neighborCoords[i][1] < 0 || neighborCoords[i][1] >= gameMap.getLengthY()
+                    || neighborCoords[i][0] >= gameMap.getLengthX()) {
+                continue;
+            }
+            // if neighbor coordinates in bounds, check if it is open
+            if (generatedMap[neighborCoords[i][0]][neighborCoords[i][1]] == 0) {
+                neighbors[i] = new AstarNode(neighborCoords[i][0],neighborCoords[i][1],gameMap);
+            }
+        }
+
+/*
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i == x && j == y) || i < 0 || j < 0 || j >= gameMap.getLengthY() ||
@@ -73,6 +106,7 @@ public class AstarNode {
                 }
             }
         }
+*/
         return neighbors;
     }
     
