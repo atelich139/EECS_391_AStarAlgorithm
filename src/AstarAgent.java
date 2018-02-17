@@ -138,12 +138,11 @@ public class AstarAgent extends Agent {
         Map<Integer, Action> actions = new HashMap<Integer, Action>();
         
         if (shouldReplanPath(newstate, path)) {
-                long planStartTime = System.nanoTime();
-                path = findPath(newstate);
-                planTime = System.nanoTime() - planStartTime;
-                totalPlanTime += planTime;
+            long planStartTime = System.nanoTime();
+            path = findPath(newstate);
+            planTime = System.nanoTime() - planStartTime;
+            totalPlanTime += planTime;
         }
-        
         
         Unit.UnitView footmanUnit = newstate.getUnit(footmanID);
         
@@ -346,8 +345,7 @@ public class AstarAgent extends Agent {
             
             if (current.getMapLocation().equals(goal1) || current.getMapLocation()
                                                                  .equals(goal2)) {
-                
-                while (current != null) {
+                while (!current.equals(startNode)) {
                     path.push(current.getMapLocation());
                     current = cameFrom.get(current);
                 }
