@@ -1,4 +1,10 @@
 Programming Assignment 2
+________________________
+@author Alexander Telich
+@author Daniel Luo
+@author Patrick Do
+
+
 
 AstarNode class:
 This class is meant to represent a node or space on the gameboard.
@@ -35,7 +41,7 @@ It is used to get neighbors and then use that information in the AstarAgent to m
         First two go to Q1, next 2 go to Q2, next two go to Q3, and last two go to Q4
         Returns an array of AstarNodes ordered by quadrant.
 
-    *Getter and Setter Methods Also Included for some fields
+    *Getter and Setter Methods also included for some fields
 
     equals(Object o):
         Overrides the equals method and considers AstarNodes equal if they have the same X and Y values.
@@ -49,13 +55,71 @@ GameMap class:
     Constructor:
         Instantiates private fields, adds the resource locations and enemy location and townhall location.
 
+    *Getter Methods also included
 
+    updateEnemyLocation(AstarAgent.MapLocation enemyFootmanLoc):
+        Updates the enemy location and places it on the generated map
 
+    addResourceLocations(Set<AstarAgent.MapLocation> resourceLocations, int[][] generatedMap):
+        Adds the resource locations onto the GameMap's generated map
+
+    addTownHallLocation(AstarAgent.MapLocation townHallLoc):
+        Adds the townhall location to the GameMap's generated map
+
+    printMap():
+        Prints out a string form of the generated map of the GameMap
 
 
 AstarAgent class:
+This class carries out planning and execution of actions for the AstarAgent using its AstarSearch
 
+    gameMap: the GameMap being traversed
+    cachedNeighbors: HashMap of the neighbors that have been traversed
+    startLoc1: starting location of AstarAgent
+    pathReplanCount: boolean representing whether or not path has been replanned
 
+    path: stack of MapLocations representing the path being considered to travel
+    footmanID, townhallID, enemyFootmanID: integer IDs of footman, townhall, and enemy footmen
+    nextLoc: stores the next location to travel for AstarAgent
+    totalPlanTime: holds the total planning time taken
+    totalExecutionTime: holds the time taken to execute action
+
+    Constructor:
+        Sets the player number of the AstarAgent
+
+    initialStep(State.StateView newstate, History.HistoryView statehistory):
+        The first step taken at the start of the game.
+        Checks for errors in the game and then instantiates the GameMap and adds all of the resource, enemy, and
+            townhall locations to the map.
+
+    middleStep(State.StateView newstate, History.HistoryView statehistory):
+        The agent finds a path to the goal and travels down that path if it doesn't need to replan.
+        Agent must also check to see if there is a next location and act depending on whether or not there is.
+
+    terminalStep(State.StateView newstate, History.HistoryView statehistory):
+        Prints out the total number of turns taken, the plan time, the execution time, and the total time taken.
+
+    shouldReplanPath(State.StateView state, Stack<MapLocation> currentPath):
+        Checks if the agent should replan its path, depending on whether or not the enemy has moved.
+
+    findPath(State.StateView state):
+        Finds a path to the goal node given the current state of the game.
+
+    AstarSearch(MapLocation start, MapLocation goal):
+        Uses our searching algorithm for Astar, which also attempts to reduce time in some cases by using a goal-based
+            quadrant search.
+
+    MapLocation inner class:
+        Holds the x and y locations of the location on the map.
+
+    equals(Object obj):
+        Overrides the equals method and considers AstarNodes equal if they have the same X and Y coordinates.
+
+    Quadrant class:
+        getQuadrant(int x, int y):
+            Gets the quadrant that the goal node is in in relation to the current node given x,y coordinates.
+        getQuadrantArea(int x, int y)
+            Gets the area of the quadrant from the current node to corner of the board (the corner where the goal lies)
 
 
 testGameMap class:

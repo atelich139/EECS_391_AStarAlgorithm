@@ -134,9 +134,11 @@ public class AstarAgent extends Agent {
                                            History.HistoryView statehistory) {
         long startTime = System.nanoTime();
         long planTime = 0;
-        
+
+        // Instantiates the actions that are to be taken
         Map<Integer, Action> actions = new HashMap<Integer, Action>();
-        
+
+        // If the agent should replan its path, then it will find a path again for the new state
         if (shouldReplanPath(newstate, path)) {
             long planStartTime = System.nanoTime();
             path = findPath(newstate);
@@ -145,10 +147,12 @@ public class AstarAgent extends Agent {
         }
         
         Unit.UnitView footmanUnit = newstate.getUnit(footmanID);
-        
+
+        // Gets the position of the footman and stores it
         int footmanX = footmanUnit.getXPosition();
         int footmanY = footmanUnit.getYPosition();
-        
+
+        // If the path is not empty and we have a nextLocation then move to it
         if (!path.empty() &&
             (nextLoc == null || (footmanX == nextLoc.x && footmanY == nextLoc.y))) {
             
@@ -157,7 +161,8 @@ public class AstarAgent extends Agent {
             
             System.out.println("Moving to (" + nextLoc.x + ", " + nextLoc.y + ")");
         }
-        
+
+        // If the next location is not found yet then move in next direction
         if (nextLoc != null && (footmanX != nextLoc.x || footmanY != nextLoc.y)) {
             int xDiff = nextLoc.x - footmanX;
             int yDiff = nextLoc.y - footmanY;
