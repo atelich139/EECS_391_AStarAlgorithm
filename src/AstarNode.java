@@ -93,23 +93,9 @@ public class AstarNode {
             }
         }
 
-/*
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if ((i == x && j == y) || i < 0 || j < 0 || j >= gameMap.getLengthY() ||
-                    i >= gameMap.getLengthX()) {
-                    continue;
-                }
-                
-                if (generatedMap[i][j] == 0) {
-                    neighbors.add(new AstarNode(i, j, gameMap));
-                }
-            }
-        }
-*/
         return neighbors;
     }
-    
+
     /**
      * Method getTraverseCost gets the cost of traversing from this node to a neighbor
      * node

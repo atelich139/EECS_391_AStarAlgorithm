@@ -1,30 +1,26 @@
-Programming Assignment 1
+Programming Assignment 2
 
-Resource Collection Agent Changes:
-Currently, we have made a MyResourceCollectionAgent that makes as many peasants as possible by producing peasants from
-the townhall and building farms whenever necessary. It does this by giving peasants actions based on the current amount
-of gold and wood available and the supply; if the supply is maxed out, the peasants build another farm. If the supply is
-not maxed out, the peasants mine more resources while the town hall takes care of producing additional peasants. If you
-let the program run for a little while, you will soon obtain a massive amount of peasants that will mine out every gold
-node on the map.
 
-There is currently a bug where all the peasants wait for a single peasant to finish building the farm.
 
-This file can be run by using the ResourceCollectionConfig.xml file.
 
-Combat Agent Changes:
-Currently, we have made a MyCombatAgent class with a combat agent that attacks nearby enemies and otherwise attacks the
-enemy that has ID = 0. This combat agent comes with a method called isInRange that takes in the StateView, primary id,
-and second id for the units. It returns a boolean based on whether or not the primary unit is in range to attack the
-secondary unit. In the middleStep of the combat agent, the player checks for each unit whether or not there is an enemy
-agent in range and if so, it will attack that enemy. Also, the combat agent has a public static field that holds the id
-of the unit attacked last so that multiple player units can simultaneously target the same enemy if in range.
-If no enemy is in range, then the agent just compound attacks the enemy with ID = 0.
 
-Currently, one bug in the combat agent is that it compound attacks enemy with ID = 0 and also sometimes the agent does
-not seem to recognize an enemy in range, which is either because it is targeting the enemy with ID = 0 or it is targetin
-the last-attacked enemy for some reason.
 
-This file can be run using the CombatAgentConfig.xml file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
