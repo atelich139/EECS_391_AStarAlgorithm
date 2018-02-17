@@ -21,7 +21,8 @@ public class AstarAgent extends Agent {
     
     MapLocation startLoc1;
     
-    boolean pathReplanCount = false;
+    boolean pathReplanCount;
+    
     
     Stack<MapLocation> path;
     int footmanID, townhallID, enemyFootmanID;
@@ -238,14 +239,15 @@ public class AstarAgent extends Agent {
     private boolean shouldReplanPath(State.StateView state, History.HistoryView history,
                                      Stack<MapLocation> currentPath) {
         
+        
         if (enemyFootmanID == -1) {
             return false;
-            
+
         }else {
             Unit.UnitView enemyFootmanUnit = state.getUnit(enemyFootmanID);
             MapLocation enemyLoc = new MapLocation(enemyFootmanUnit.getXPosition(),
                                                    enemyFootmanUnit.getYPosition(), null, 0);
-    
+
             if (currentPath.contains(enemyLoc)) {
                 gameMap.updateEnemyLocation(enemyLoc);
                 pathReplanCount = true;
@@ -254,6 +256,7 @@ public class AstarAgent extends Agent {
                 return false;
             }
         }
+        
     }
     
     /**
@@ -395,8 +398,8 @@ public class AstarAgent extends Agent {
                 Integer neighborQuadrant = new Quadrant().getQuadrant(neighbor.getX(),
                                                                      neighbor.getY());
 
-                if (!pathReplanCount && neighborQuadrant != goalQuadrant &&
-                    !quadrantViolated) {
+                if (!quadrantViolated && !pathReplanCount && neighborQuadrant !=
+                                                          goalQuadrant) {
                     continue;
                 }
     
