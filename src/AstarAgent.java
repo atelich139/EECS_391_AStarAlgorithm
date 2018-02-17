@@ -337,7 +337,6 @@ public class AstarAgent extends Agent {
         openList.offer(startNode);
         
         int quadrantArea1 = new Quadrant().getQuadrantArea(goal.x, goal.y);
-        
         boolean quadrantViolated = false;
         
         while (!openList.isEmpty()) {
