@@ -141,9 +141,7 @@ public class GameMap {
     public int[][] getGeneratedMap() {
         return generatedMap;
     }
-
-
-
+    
     /**
      * Moves the footman from its last known position on the GameMap to its current
      * new position.

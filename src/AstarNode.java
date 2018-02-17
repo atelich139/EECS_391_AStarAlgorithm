@@ -92,21 +92,6 @@ public class AstarNode {
                 neighbors[i] = new AstarNode(neighborCoords[i][0],neighborCoords[i][1],gameMap);
             }
         }
-
-/*
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if ((i == x && j == y) || i < 0 || j < 0 || j >= gameMap.getLengthY() ||
-                    i >= gameMap.getLengthX()) {
-                    continue;
-                }
-                
-                if (generatedMap[i][j] == 0) {
-                    neighbors.add(new AstarNode(i, j, gameMap));
-                }
-            }
-        }
-*/
         return neighbors;
     }
     
@@ -166,7 +151,12 @@ public class AstarNode {
         this.cachedHeuristic = cachedHeuristic;
     }
     
-    
+    /**
+     * Override method for AstarNode
+     *
+     * @param obj the object to be compared
+     * @return boolean if the object is what it is being compared to.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
