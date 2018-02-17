@@ -32,7 +32,7 @@ public class testGameMap {
     }
 
     /**
-     * Main method to put testing methods in
+     * Main method to test the generation of map in GameMap
      * @author Daniel Luo
      * @param args holds the main method arguments
      */

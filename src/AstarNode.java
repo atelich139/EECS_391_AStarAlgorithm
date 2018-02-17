@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.ArrayList;
-
 /**
  * The AstarNode Class
  *
@@ -27,6 +24,7 @@ public class AstarNode {
      *                each y-value corresponds to an ArrayList of Integers for x-values in
      *                that row.
      *
+     * @author Daniel Luo
      * @author Alexander Telich
      */
     public AstarNode(int x, int y, GameMap gameMap) {
@@ -108,16 +106,25 @@ public class AstarNode {
     }
     
     /**
-     * Getter methods for getting x and y coordinate of this AstarNode
+     * Getter method for getting x coordinate of this AstarNode
      *
-     * @return int of either the x location of the y location
+     * @return int of the x location
      *
+     * @author Daniel Luo
      * @author Alexander Telich
      */
     public int getX() {
         return x;
     }
-    
+
+    /**
+     * Getter method for getting y coordinate of this AstarNode
+     *
+     * @return int of the y location
+     *
+     * @author Daniel Luo
+     * @author Alexander Telich
+     */
     public int getY() {
         return y;
     }
@@ -156,6 +163,9 @@ public class AstarNode {
      *
      * @param obj the object to be compared
      * @return boolean if the object is what it is being compared to.
+     *
+     * @author Alexander Telich
+     * @author Patrick Do
      */
     @Override
     public boolean equals(Object obj) {

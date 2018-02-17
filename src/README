@@ -1,19 +1,76 @@
 Programming Assignment 2
 
+AstarNode class:
+This class is meant to represent a node or space on the gameboard.
+It is used to get neighbors and then use that information in the AstarAgent to make decisions.
+
+    PRIVATE FIELDS:
+        x,y: x and y coordinates of the node
+        mapLocation: MapLocation of the node
+        generatedMap: 2D array for the map
+        gameMap: The GameMap object stored by node
+        cachedHeuristic: Stores the heuristic for the node if necessary
+
+    Constructor:
+        Takes the x, y, mapLocation, generatedMap, and gameMap to set it to the private fields.
+
+    getHeuristic(AstarAgent.MapLocation goal):
+        Gets the heuristic function to the goal, which is the Chebyshev distance.
+
+    getNeighbors():
+        Method getNeighbors gets the AstarNode that are neighbors of the current AstarNode
+
+             *
+              Quadrants:
+
+                  |    1
+               4  |
+                  |-----
+                  |*|
+               -----|
+                    |  2
+               3    |
+
+        We will add the neighbors to the array in order of quadrants
+        First two go to Q1, next 2 go to Q2, next two go to Q3, and last two go to Q4
+        Returns an array of AstarNodes ordered by quadrant.
+
+    *Getter and Setter Methods Also Included for some fields
+
+    equals(Object o):
+        Overrides the equals method and considers AstarNodes equal if they have the same X and Y values.
+
+
+GameMap class:
+    PRIVATE FIELDS:
+        generatedMap: 2D array for the map
+        enemyLocation: stores the location of the enemy on the map
+
+    Constructor:
+        Instantiates private fields, adds the resource locations and enemy location and townhall location.
 
 
 
 
 
+AstarAgent class:
 
 
 
 
+testGameMap class:
+This class is meant to test whether or not the GameMap is instantiated correctly along with its generated map.
 
+    arrayToString(int[][] arr):
+    Takes an array and returns a String representation of the 2D array.
 
-
-
-
+    main(String[] args):
+    Creates an int 2D array of a possible GameMap
+    Writes the locations of enemy, resources, and townhall
+    Creates a GameMap with inputs of the above locations
+    Tests to see if the control 2D array is the same as the generated map of created GameMap; returns true if they are
+        the same and false if they are not
+    ***The test is passed
 
 
 
