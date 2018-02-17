@@ -92,10 +92,9 @@ public class AstarNode {
                 neighbors[i] = new AstarNode(neighborCoords[i][0],neighborCoords[i][1],gameMap);
             }
         }
-
         return neighbors;
     }
-
+    
     /**
      * Method getTraverseCost gets the cost of traversing from this node to a neighbor
      * node
@@ -152,7 +151,12 @@ public class AstarNode {
         this.cachedHeuristic = cachedHeuristic;
     }
     
-    
+    /**
+     * Override method for AstarNode
+     *
+     * @param obj the object to be compared
+     * @return boolean if the object is what it is being compared to.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
