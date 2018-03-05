@@ -2,8 +2,7 @@
 ## Dates
 2/9/2018 - 2/16/2018 
 ## Description
-    In this assignment, our group of three had to implement an AStar search algorithm for a game scenario where an agent had to navigate
-a game board.
+In this assignment, our group of three had to implement an AStar search algorithm for a game scenario where an agent had to navigate a game board.
 ## My Role:
 - Created skeleton for how we implemented our AStar algorithm.
 - Delegated takes to each group member
