@@ -1,4 +1,4 @@
-This is an assignment for the class EECS 391: Artifical Intelligence. 
+## This is an assignment for the class EECS 391: Artifical Intelligence. 
 
     In this assignment, our group of three had to implement an AStar search algorithm for a game scenario where an agent had to navigate
 a game board.
