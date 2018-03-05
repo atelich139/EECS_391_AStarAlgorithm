@@ -8,6 +8,5 @@ a game board.
     - Delegated takes to each group member
         - Daniel: Wrote the AStarNode class which stores the data for each square of the game board.
         - Patrick: Wrote the GameMap class which cached the game map. Allowed us to read and perform updates to the game map. 
-        - Alexander (Myself): Wrote the AStar algorithm. Helped with some areas of the other classes. Implemented the 
-          technique to optimize run time by expanding the neighbors of the node by their relation to the quadrant that the goal was in. 
+        - Alexander (Myself): Wrote the AStar algorithm. Helped with some areas of the other classes. Implemented the technique to optimize run time by expanding the neighbors of the node by their relation to the quadrant that the goal was in. 
  
