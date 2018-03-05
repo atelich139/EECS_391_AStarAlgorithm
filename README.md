@@ -1,4 +1,4 @@
-# Assignment for EECS 391: Artifical Intelligence. 
+# Assignment 2 for EECS 391: Artifical Intelligence. 
 ## Dates
 2/9/2018 - 2/16/2018 
 ## Description
