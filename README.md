@@ -1,4 +1,4 @@
-# This is an assignment for the class EECS 391: Artifical Intelligence. 
+# Assignment for EECS 391: Artifical Intelligence. 
 ## Dates
 2/9/2018 - 2/16/2018 
 ## Description
